@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsip Dokumen NPWP - Sistem Pendataan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;--success:#16a34a;--success-light:#dcfce7;--warning:#f59e0b;--warning-light:#fef3c7;--danger:#dc2626;--danger-light:#fee2e2;--info:#0891b2;--info-light:#cffafe;--purple:#7c3aed;--purple-light:#ede9fe;--gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-300:#cbd5e1;--gray-400:#94a3b8;--gray-500:#64748b;--gray-600:#475569;--gray-700:#334155;--gray-800:#1e293b;--gray-900:#0f172a;--white:#fff;--sidebar-width:260px;--topbar-height:65px;--radius:8px;--radius-lg:12px;--shadow:0 1px 3px rgba(0,0,0,.1);--shadow-md:0 4px 6px -1px rgba(0,0,0,.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,.1)}
+        body{font-family:'Inter',sans-serif;background:var(--gray-100);color:var(--gray-800);min-height:100vh}
+
+        .login-page{min-height:100vh;display:flex;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#2563eb 100%);position:relative;overflow:hidden}
+        .login-page::before{content:'';position:absolute;top:-50%;right:-20%;width:600px;height:600px;border-radius:50%;background:rgba(37,99,235,.15)}
+        .login-left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:60px;color:#fff;position:relative;z-index:1}
+        .login-left .brand{display:flex;align-items:center;gap:15px;margin-bottom:40px}
+        .login-left .brand i{font-size:2.5rem;color:#60a5fa}
+        .login-left .brand h1{font-size:2rem;font-weight:700}
+        .login-left h2{font-size:2.5rem;font-weight:700;line-height:1.3;margin-bottom:20px}
+        .login-left p{font-size:1.1rem;opacity:.8;line-height:1.7;max-width:500px}
+        .login-features{margin-top:40px;display:flex;flex-direction:column;gap:16px}
+        .login-features .feature{display:flex;align-items:center;gap:12px;font-size:.95rem;opacity:.9}
+        .login-features .feature i{color:#60a5fa;width:24px;text-align:center}
+        .login-right{width:480px;display:flex;align-items:center;justify-content:center;padding:40px;position:relative;z-index:1}
+        .login-card{background:#fff;border-radius:20px;padding:40px;width:100%;box-shadow:0 25px 50px rgba(0,0,0,.3);animation:slideUp .5s ease}
+        @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        .login-card h3{font-size:1.5rem;font-weight:700;margin-bottom:8px}
+        .login-card .subtitle{color:var(--gray-500);font-size:.9rem;margin-bottom:30px}
+        .login-card .form-group{margin-bottom:20px}
+        .login-card .form-group label{display:block;margin-bottom:8px;font-size:.85rem;font-weight:600;color:var(--gray-700)}
+        .input-icon-wrapper{position:relative}
+        .input-icon-wrapper>i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gray-400);pointer-events:none;z-index:1}
+        .input-icon-wrapper input,.input-icon-wrapper select{width:100%;padding:12px 14px 12px 44px;border:2px solid var(--gray-200);border-radius:10px;font-size:.9rem;font-family:'Inter',sans-serif;transition:.3s;color:var(--gray-800);background:var(--gray-50)}
+        .input-icon-wrapper input:focus,.input-icon-wrapper select:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 4px rgba(37,99,235,.1)}
+        .password-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gray-400);cursor:pointer}
+        .btn-login{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:600;cursor:pointer;transition:.3s;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px}
+        .btn-login:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(37,99,235,.4)}
+        .login-footer{text-align:center;margin-top:24px;font-size:.85rem;color:var(--gray-500)}
+        .login-footer a{color:var(--primary);text-decoration:none;font-weight:600;cursor:pointer}
+        .login-error{background:var(--danger-light);color:var(--danger);padding:10px 14px;border-radius:8px;font-size:.85rem;margin-bottom:16px;display:none;align-items:center;gap:8px}
+        .login-error.show{display:flex}
+        .form-row-login{display:flex;gap:12px}
+        .form-row-login .form-group{flex:1}
+
+        .app-layout{display:none;min-height:100vh}.app-layout.active{display:flex}.login-page.hidden{display:none}
+
+        .sidebar{width:var(--sidebar-width);background:linear-gradient(180deg,var(--gray-900),var(--gray-800));color:#fff;position:fixed;top:0;left:0;height:100vh;z-index:1000;transition:.3s;display:flex;flex-direction:column}
+        .sidebar-header{padding:20px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.1);min-height:65px}
+        .logo{display:flex;align-items:center;gap:12px;font-size:1.2rem;font-weight:700}
+        .logo i{font-size:1.4rem;color:#60a5fa}
+        .sidebar-nav{flex:1;padding:10px 0;overflow-y:auto}
+        .sidebar-nav ul{list-style:none}
+        .sidebar-nav li{margin:3px 12px}
+        .sidebar-nav li a{display:flex;align-items:center;gap:14px;padding:11px 16px;color:var(--gray-400);text-decoration:none;border-radius:var(--radius);transition:.3s;font-size:.85rem;font-weight:500;cursor:pointer}
+        .sidebar-nav li a i{font-size:1rem;min-width:20px;text-align:center}
+        .sidebar-nav li:hover a{background:rgba(37,99,235,.2);color:#fff}
+        .sidebar-nav li.active a{background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.4)}
+        .nav-divider{height:1px;background:rgba(255,255,255,.08);margin:10px 20px}
+        .nav-label{padding:6px 20px;font-size:.65rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--gray-500);font-weight:600}
+        .sidebar-user{padding:14px 20px;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:12px}
+        .sidebar-user-avatar{width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem}
+        .sidebar-user-info{flex:1;overflow:hidden}
+        .sidebar-user-info .name{font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .sidebar-user-info .role{font-size:.68rem;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px}
+        .btn-logout{background:none;border:none;color:var(--gray-400);cursor:pointer;font-size:1rem;padding:5px;transition:.3s}
+        .btn-logout:hover{color:var(--danger)}
+
+        .main-content{flex:1;margin-left:var(--sidebar-width);transition:.3s;min-height:100vh}
+        .topbar{height:var(--topbar-height);background:#fff;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+        .topbar-left{display:flex;align-items:center;gap:15px}
+        .topbar-left h2{font-size:1.1rem;font-weight:600}
+        .mobile-toggle{display:none;background:none;border:none;font-size:1.3rem;color:var(--gray-600);cursor:pointer}
+        .topbar-right{display:flex;align-items:center;gap:16px}
+        .topbar-user{display:flex;align-items:center;gap:10px;padding:6px 14px;background:var(--gray-50);border-radius:50px;cursor:pointer;position:relative}
+        .topbar-user>i:first-child{color:var(--primary);font-size:1.3rem}
+        .topbar-user>span{font-size:.85rem;font-weight:500}
+        .user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--gray-200);min-width:200px;display:none;z-index:200;overflow:hidden}
+        .user-dropdown.show{display:block}
+        .user-dropdown-header{padding:14px 16px;border-bottom:1px solid var(--gray-100)}
+        .user-dropdown-header .dd-name{font-weight:600;font-size:.9rem}
+        .user-dropdown-header .dd-role{font-size:.75rem;color:var(--gray-500)}
+        .user-dropdown a{display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--gray-700);text-decoration:none;font-size:.85rem;transition:.2s;cursor:pointer}
+        .user-dropdown a:hover{background:var(--gray-50)}
+        .user-dropdown a.logout-link{color:var(--danger);border-top:1px solid var(--gray-100)}
+
+        .page-content{padding:25px 30px}
+        .page{display:none;animation:fadeIn .3s ease}.page.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:25px}
+        .stat-card{background:#fff;border-radius:var(--radius-lg);padding:22px;display:flex;align-items:center;gap:18px;box-shadow:var(--shadow);transition:.3s;border-left:4px solid transparent}
+        .stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+        .stat-blue{border-left-color:var(--primary)}.stat-green{border-left-color:var(--success)}.stat-orange{border-left-color:var(--warning)}.stat-red{border-left-color:var(--danger)}.stat-purple{border-left-color:var(--purple)}
+        .stat-icon{width:50px;height:50px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+        .stat-blue .stat-icon{background:var(--primary-light);color:var(--primary)}.stat-green .stat-icon{background:var(--success-light);color:var(--success)}.stat-orange .stat-icon{background:var(--warning-light);color:var(--warning)}.stat-red .stat-icon{background:var(--danger-light);color:var(--danger)}.stat-purple .stat-icon{background:var(--purple-light);color:var(--purple)}
+        .stat-info h3{font-size:1.6rem;font-weight:700;line-height:1}.stat-info p{font-size:.82rem;color:var(--gray-500);margin-top:4px}
+        .content-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:20px}
+
+        .card{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden}
+        .card-header{padding:16px 24px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+        .card-header h3{font-size:.95rem;font-weight:600;display:flex;align-items:center;gap:8px}
+        .card-header h3 i{color:var(--primary)}.card-body{padding:20px 24px}
+
+        .table-responsive{overflow-x:auto}
+        .data-table{width:100%;border-collapse:collapse;font-size:.83rem}
+        .data-table thead th{background:var(--gray-50);padding:11px 12px;text-align:left;font-weight:600;color:var(--gray-600);border-bottom:2px solid var(--gray-200);white-space:nowrap;text-transform:uppercase;font-size:.72rem;letter-spacing:.5px}
+        .data-table tbody td{padding:11px 12px;border-bottom:1px solid var(--gray-100);color:var(--gray-700)}
+        .data-table tbody tr:hover{background-color:var(--gray-50)}
+
+        .badge{padding:4px 10px;border-radius:50px;font-size:.7rem;font-weight:600;display:inline-block}
+        .badge-success{background:var(--success-light);color:var(--success)}.badge-warning{background:var(--warning-light);color:var(--warning)}.badge-danger{background:var(--danger-light);color:var(--danger)}.badge-info{background:var(--info-light);color:var(--info)}.badge-primary{background:var(--primary-light);color:var(--primary)}.badge-purple{background:var(--purple-light);color:var(--purple)}
+
+        .btn{padding:9px 18px;border:none;border-radius:var(--radius);font-size:.83rem;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.3s;font-family:'Inter',sans-serif;white-space:nowrap}
+        .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-md)}
+        .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}
+        .btn-secondary{background:var(--gray-200);color:var(--gray-700)}
+        .btn-success{background:var(--success);color:#fff}
+        .btn-danger{background:var(--danger);color:#fff}
+        .btn-info{background:var(--info);color:#fff}
+        .btn-purple{background:var(--purple);color:#fff}
+        .btn-sm{padding:6px 12px;font-size:.76rem}
+        .btn-icon{width:30px;height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+        .action-btns{display:flex;gap:5px}
+
+        .form-group{margin-bottom:16px;flex:1}
+        .form-group label{display:block;margin-bottom:6px;font-size:.83rem;font-weight:500;color:var(--gray-700)}
+        .required{color:var(--danger)}
+        .form-input,.form-select{width:100%;padding:10px 14px;border:1px solid var(--gray-300);border-radius:var(--radius);font-size:.88rem;font-family:'Inter',sans-serif;transition:.3s;color:var(--gray-800);background:#fff}
+        .form-input:focus,.form-select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+        .form-input-lg{padding:14px 18px;font-size:1.1rem}
+        .form-hint{font-size:.73rem;color:var(--gray-400);margin-top:4px;display:block}
+        .form-row{display:flex;gap:16px}
+        .filter-bar{display:flex;gap:12px;flex-wrap:wrap;width:100%}
+        .filter-bar .form-input,.filter-bar .form-select{width:auto;min-width:150px;flex:1}
+
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px}
+        .modal-overlay.active{display:flex}
+        .modal{background:#fff;border-radius:var(--radius-lg);width:100%;max-width:550px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:slideUp .3s ease}
+        .modal-lg{max-width:700px}
+        .modal-header{padding:18px 24px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
+        .modal-header h3{font-size:1.05rem;font-weight:600}
+        .modal-close{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--gray-400);padding:5px}
+        .modal-close:hover{color:var(--danger)}
+        .modal-body{padding:24px}
+        .modal-footer{display:flex;justify-content:flex-end;gap:10px;padding-top:20px;margin-top:10px;border-top:1px solid var(--gray-200)}
+
+        .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+        .page-header h3{font-size:1.05rem;font-weight:600}
+
+        .search-section{padding:30px 0;text-align:center}
+        .search-input-group{display:flex;max-width:600px;margin:0 auto;gap:10px}
+        .search-input-group .form-input{flex:1}
+
+        .wp-info-card{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-radius:var(--radius-lg);padding:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+        .wp-info-item{display:flex;flex-direction:column;gap:4px}
+        .wp-info-item label{font-size:.73rem;opacity:.8;text-transform:uppercase;letter-spacing:.5px}
+        .wp-info-item span{font-size:.95rem;font-weight:600}
+
+        .not-found{text-align:center;padding:50px 20px;color:var(--gray-400)}
+        .not-found i{font-size:3rem;margin-bottom:15px;color:var(--warning)}
+        .not-found h3{margin-bottom:8px;color:var(--gray-600)}
+
+        .kategori-stats{display:flex;flex-direction:column;gap:10px}
+        .kategori-item{display:flex;align-items:center;gap:12px}
+        .kategori-item .label{font-size:.83rem;color:var(--gray-600);flex:1}
+        .kategori-item .bar-wrapper{flex:2;height:8px;background:var(--gray-200);border-radius:50px;overflow:hidden}
+        .kategori-item .bar{height:100%;border-radius:50px;background:var(--primary);transition:width .5s}
+        .kategori-item .count{font-size:.83rem;font-weight:600;min-width:30px;text-align:right}
+
+        .laporan-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;padding:10px 0}
+        .summary-item{text-align:center;padding:16px;background:var(--gray-50);border-radius:var(--radius)}
+        .summary-item h4{font-size:1.6rem;font-weight:700;color:var(--primary)}
+        .summary-item p{font-size:.78rem;color:var(--gray-500);margin-top:4px}
+
+        .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .detail-item{display:flex;flex-direction:column;gap:4px}
+        .detail-item label{font-size:.73rem;color:var(--gray-400);text-transform:uppercase;font-weight:600}
+        .detail-item span{font-size:.93rem;color:var(--gray-800);font-weight:500}
+        .detail-item.full-width{grid-column:1/-1}
+        .detail-divider{grid-column:1/-1;border:none;border-top:1px solid var(--gray-200);margin:8px 0}
+
+        .toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+        .toast{padding:14px 20px;border-radius:var(--radius);color:#fff;font-size:.88rem;font-weight:500;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;animation:slideInRight .3s ease;min-width:280px}
+        .toast-success{background:var(--success)}.toast-error{background:var(--danger)}.toast-warning{background:var(--warning)}
+        @keyframes slideInRight{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
+
+        .npwp-display{font-family:'Courier New',monospace;font-weight:600;letter-spacing:1px}
+
+        .input-dok-container{max-width:750px;margin:0 auto}
+        .input-dok-container .card{border-top:4px solid var(--primary)}
+        .input-success{text-align:center;padding:40px 20px}
+        .input-success i{font-size:4rem;color:var(--success);margin-bottom:16px;display:block}
+        .input-success h3{font-size:1.2rem;margin-bottom:8px}
+        .input-success p{color:var(--gray-500);margin-bottom:24px}
+        .input-success .btn-group{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+        .file-upload-area{border:2px dashed var(--gray-300);border-radius:var(--radius);padding:24px;text-align:center;transition:.3s;cursor:pointer;background:var(--gray-50)}
+        .file-upload-area:hover,.file-upload-area.dragover{border-color:var(--primary);background:var(--primary-light)}
+        .file-upload-area i{font-size:2rem;color:var(--gray-400);margin-bottom:8px}
+        .file-upload-area p{font-size:.85rem;color:var(--gray-500)}
+        .file-upload-area small{font-size:.75rem;color:var(--gray-400)}
+        .file-upload-area input[type="file"]{display:none}
+        .file-preview{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+        .file-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius)}
+        .file-item i{color:var(--danger);font-size:1.3rem}
+        .file-item .file-info{flex:1}
+        .file-item .file-name{font-size:.85rem;font-weight:500}
+        .file-item .file-size{font-size:.72rem;color:var(--gray-400)}
+        .file-item .file-remove{background:none;border:none;color:var(--danger);cursor:pointer;font-size:1rem;padding:4px}
+        .file-item .file-view{background:none;border:none;color:var(--primary);cursor:pointer;font-size:.9rem;padding:4px;margin-right:4px}
+
+        .kohir-display{font-family:'Courier New',monospace;font-weight:700;font-size:1.1rem;color:var(--purple);letter-spacing:1px;background:var(--purple-light);padding:8px 16px;border-radius:var(--radius);display:inline-block}
+        .penagihan-card{border-top:4px solid var(--purple)!important}
+
+        .penagihan-result-card{border:1px solid var(--gray-200);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px}
+        .penagihan-result-header{background:linear-gradient(135deg,var(--purple),#5b21b6);color:#fff;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        .penagihan-result-header .kohir-big{font-family:'Courier New',monospace;font-size:1.2rem;font-weight:700;letter-spacing:1px}
+
+        @media(max-width:1024px){.content-grid{grid-template-columns:1fr}.login-left{display:none}.login-right{width:100%}}
+        @media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.mobile-open{transform:translateX(0)}.main-content{margin-left:0!important}.mobile-toggle{display:block}.topbar{padding:0 15px}.page-content{padding:15px}.form-row{flex-direction:column;gap:0}.filter-bar{flex-direction:column}.filter-bar .form-input,.filter-bar .form-select{width:100%}.search-input-group{flex-direction:column}.stats-grid{grid-template-columns:1fr 1fr}.detail-grid{grid-template-columns:1fr}.wp-info-card{grid-template-columns:1fr}.form-row-login{flex-direction:column;gap:0}}
+        @media(max-width:480px){.stats-grid{grid-template-columns:1fr}}
+        ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:var(--gray-100)}::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:50px}
+    </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-page" id="loginPage">
+    <div class="login-left">
+        <div class="brand"><i class="fas fa-archive"></i><h1>ArsipNPWP</h1></div>
+        <h2>Sistem Pendataan<br>Dokumen NPWP</h2>
+        <p>Kelola arsip dokumen perpajakan secara digital dengan fitur penagihan, upload file, dan pencarian cepat.</p>
+        <div class="login-features">
+            <div class="feature"><i class="fas fa-check-circle"></i> Upload file PDF dokumen</div>
+            <div class="feature"><i class="fas fa-check-circle"></i> Penagihan dengan nomor kohir otomatis</div>
+            <div class="feature"><i class="fas fa-check-circle"></i> Pencarian cepat berdasarkan NPWP</div>
+            <div class="feature"><i class="fas fa-check-circle"></i> Multi user & export laporan</div>
+        </div>
+    </div>
+    <div class="login-right">
+        <div class="login-card" id="loginFormCard">
+            <h3>Selamat Datang!</h3>
+            <p class="subtitle">Masuk ke akun Anda</p>
+            <div class="login-error" id="loginError"><i class="fas fa-exclamation-circle"></i><span id="loginErrorMsg"></span></div>
+            <form id="formLogin">
+                <div class="form-group"><label>Username</label><div class="input-icon-wrapper"><i class="fas fa-user"></i><input type="text" id="loginUsername" required></div></div>
+                <div class="form-group"><label>Password</label><div class="input-icon-wrapper"><i class="fas fa-lock"></i><input type="password" id="loginPassword" required><button type="button" class="password-toggle" id="toggleLoginPass"><i class="fas fa-eye"></i></button></div></div>
+                <button type="submit" class="btn-login"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+            </form>
+            <div class="login-footer">Belum punya akun? <a id="showRegister">Daftar</a></div>
+            <div style="margin-top:16px;padding:10px;background:var(--gray-50);border-radius:8px;font-size:.76rem;color:var(--gray-500)"><strong>Demo:</strong> admin/admin123 | operator/operator123</div>
+        </div>
+        <div class="login-card" id="registerFormCard" style="display:none">
+            <h3>Buat Akun Baru</h3><p class="subtitle">Isi data berikut</p>
+            <div class="login-error" id="registerError"><i class="fas fa-exclamation-circle"></i><span id="registerErrorMsg"></span></div>
+            <form id="formRegister">
+                <div class="form-group"><label>Nama</label><div class="input-icon-wrapper"><i class="fas fa-user"></i><input type="text" id="regNama" required></div></div>
+                <div class="form-row-login"><div class="form-group"><label>Username</label><div class="input-icon-wrapper"><i class="fas fa-at"></i><input type="text" id="regUsername" required minlength="3"></div></div><div class="form-group"><label>Role</label><div class="input-icon-wrapper"><i class="fas fa-shield-alt"></i><select id="regRole"><option>Operator</option><option>Admin</option></select></div></div></div>
+                <div class="form-group"><label>Password</label><div class="input-icon-wrapper"><i class="fas fa-lock"></i><input type="password" id="regPassword" required minlength="6"><button type="button" class="password-toggle" id="toggleRegPass"><i class="fas fa-eye"></i></button></div></div>
+                <div class="form-group"><label>Konfirmasi</label><div class="input-icon-wrapper"><i class="fas fa-lock"></i><input type="password" id="regConfirm" required></div></div>
+                <button type="submit" class="btn-login"><i class="fas fa-user-plus"></i> Daftar</button>
+            </form>
+            <div class="login-footer">Sudah punya akun? <a id="showLogin">Masuk</a></div>
+        </div>
+    </div>
+</div>
+
+<!-- APP -->
+<div class="app-layout" id="appLayout">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header"><div class="logo"><i class="fas fa-archive"></i><span>ArsipNPWP</span></div></div>
+        <nav class="sidebar-nav"><ul id="navMenu">
+            <li class="active" data-page="dashboard"><a><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+            <div class="nav-divider"></div><div class="nav-label">Data Master</div>
+            <li data-page="wajib-pajak"><a><i class="fas fa-users"></i><span>Wajib Pajak</span></a></li>
+            <li data-page="dokumen"><a><i class="fas fa-file-alt"></i><span>Dokumen</span></a></li>
+            <div class="nav-divider"></div><div class="nav-label">Transaksi</div>
+            <li data-page="input-dokumen"><a><i class="fas fa-plus-circle"></i><span>Input Dokumen</span></a></li>
+            <li data-page="penagihan"><a><i class="fas fa-file-invoice-dollar"></i><span>Penagihan</span></a></li>
+            <li data-page="cari-penagihan"><a><i class="fas fa-search-dollar"></i><span>Cari Penagihan</span></a></li>
+            <li data-page="pencarian"><a><i class="fas fa-search"></i><span>Cari Dokumen</span></a></li>
+            <div class="nav-divider"></div><div class="nav-label">Report</div>
+            <li data-page="laporan"><a><i class="fas fa-chart-bar"></i><span>Laporan</span></a></li>
+            <li data-page="pengguna" id="navPengguna" style="display:none"><a><i class="fas fa-user-cog"></i><span>Kelola User</span></a></li>
+        </ul></nav>
+        <div class="sidebar-user">
+            <div class="sidebar-user-avatar" id="sidebarAvatar">A</div>
+            <div class="sidebar-user-info"><div class="name" id="sidebarName">Admin</div><div class="role" id="sidebarRole">Admin</div></div>
+            <button class="btn-logout" id="sidebarLogout" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left"><button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button><h2 id="pageTitle">Dashboard</h2></div>
+            <div class="topbar-right">
+                <div class="topbar-user" id="topbarUser"><i class="fas fa-user-circle"></i><span id="topbarName">Admin</span><i class="fas fa-chevron-down" style="font-size:.7rem;color:var(--gray-400)"></i>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-dropdown-header"><div class="dd-name" id="ddName">Admin</div><div class="dd-role" id="ddRole">Admin</div></div>
+                        <a id="btnChangePass"><i class="fas fa-key"></i> Ganti Password</a>
+                        <a class="logout-link" id="ddLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <!-- DASHBOARD -->
+            <section class="page active" id="page-dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card stat-blue"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><h3 id="totalWP">0</h3><p>Wajib Pajak</p></div></div>
+                    <div class="stat-card stat-green"><div class="stat-icon"><i class="fas fa-file-alt"></i></div><div class="stat-info"><h3 id="totalDokumen">0</h3><p>Dokumen</p></div></div>
+                    <div class="stat-card stat-purple"><div class="stat-icon"><i class="fas fa-file-invoice-dollar"></i></div><div class="stat-info"><h3 id="totalPenagihan">0</h3><p>Penagihan</p></div></div>
+                    <div class="stat-card stat-red"><div class="stat-icon"><i class="fas fa-calendar-day"></i></div><div class="stat-info"><h3 id="todayDokumen">0</h3><p>Hari Ini</p></div></div>
+                </div>
+                <div class="content-grid">
+                    <div class="card"><div class="card-header"><h3><i class="fas fa-clock"></i> Dokumen Terbaru</h3></div><div class="card-body"><div class="table-responsive"><table class="data-table"><thead><tr><th>NPWP</th><th>Nama</th><th>Dokumen</th><th>Tgl</th><th>Status</th></tr></thead><tbody id="recentDokumen"></tbody></table></div></div></div>
+                    <div class="card"><div class="card-header"><h3><i class="fas fa-chart-pie"></i> Statistik Jenis Dokumen</h3></div><div class="card-body"><div id="jenisStats" class="kategori-stats"></div></div></div>
+                </div>
+            </section>
+
+            <!-- WP -->
+            <section class="page" id="page-wajib-pajak">
+                <div class="page-header"><h3>Data Wajib Pajak</h3><button class="btn btn-primary" id="btnTambahWP"><i class="fas fa-plus"></i> Tambah</button></div>
+                <div class="card"><div class="card-header"><div class="filter-bar"><input type="text" id="searchWP" placeholder="Cari NPWP atau Nama..." class="form-input"><select id="filterStatusWP" class="form-select"><option value="">Semua Status</option><option>Aktif</option><option>Tidak Aktif</option></select></div></div><div class="card-body"><div class="table-responsive"><table class="data-table"><thead><tr><th>No</th><th>NPWP</th><th>Nama</th><th>Jenis</th><th>Alamat</th><th>Status</th><th>Dok</th><th>Aksi</th></tr></thead><tbody id="tableWP"></tbody></table></div></div></div>
+            </section>
+
+            <!-- DOKUMEN -->
+            <section class="page" id="page-dokumen">
+                <div class="page-header"><h3>Data Dokumen</h3><button class="btn btn-primary" id="btnTambahDok"><i class="fas fa-plus"></i> Tambah</button></div>
+                <div class="card"><div class="card-header"><div class="filter-bar"><input type="text" id="searchDokumen" placeholder="Cari..." class="form-input"><select id="filterStatusDok" class="form-select"><option value="">Semua Status</option><option>Lengkap</option><option>Belum Lengkap</option><option>Proses Verifikasi</option></select></div></div><div class="card-body"><div class="table-responsive"><table class="data-table"><thead><tr><th>No</th><th>No.Dok</th><th>NPWP</th><th>Nama</th><th>Jenis</th><th>Thn</th><th>File</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tableDokumen"></tbody></table></div></div></div>
+            </section>
+
+            <!-- INPUT DOKUMEN (SIMPLIFIED) -->
+            <section class="page" id="page-input-dokumen">
+                <div class="input-dok-container">
+                    <div class="card" id="inputDokCard" style="border-top:4px solid var(--primary)">
+                        <div class="card-header"><h3><i class="fas fa-plus-circle"></i> Input Dokumen Baru</h3><span class="badge badge-info" id="inputDokDate"></span></div>
+                        <div class="card-body">
+                            <form id="formInputDok">
+                                <div class="form-group">
+                                    <label>NPWP Wajib Pajak <span class="required">*</span></label>
+                                    <input type="text" id="inputDokNPWP" class="form-input" placeholder="Masukkan NPWP (contoh: 01.234.567.8-901.000)" required maxlength="20">
+                                    <small class="form-hint">Format: XX.XXX.XXX.X-XXX.XXX</small>
+                                </div>
+                                <div class="form-group"><label>Nomor Dokumen <span class="required">*</span></label><input type="text" id="inputDokNomor" class="form-input" placeholder="DOK-2025-007" required></div>
+                                <div class="form-group"><label>Jenis Dokumen <span class="required">*</span></label><input type="text" id="inputDokJenis" class="form-input" placeholder="SPT Tahunan PPh Badan" required></div>
+                                <div class="form-row">
+                                    <div class="form-group"><label>Tahun Pajak <span class="required">*</span></label><input type="number" id="inputDokTahun" class="form-input" min="2000" max="2099" required></div>
+                                    <div class="form-group"><label>Masa Pajak</label><select id="inputDokMasa" class="form-select"><option value="">--</option><option>Januari</option><option>Februari</option><option>Maret</option><option>April</option><option>Mei</option><option>Juni</option><option>Juli</option><option>Agustus</option><option>September</option><option>Oktober</option><option>November</option><option>Desember</option></select></div>
+                                </div>
+                                <div class="form-group"><label>Status</label><select id="inputDokStatus" class="form-select"><option>Lengkap</option><option>Belum Lengkap</option><option>Proses Verifikasi</option></select></div>
+                                <!-- FILE UPLOAD -->
+                                <div class="form-group">
+                                    <label><i class="fas fa-paperclip"></i> Upload File Dokumen (PDF)</label>
+                                    <div class="file-upload-area" id="fileUploadArea">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Klik atau drag file PDF ke sini</p>
+                                        <small>Maksimal 10MB per file. Format: PDF</small>
+                                        <input type="file" id="fileInput" accept=".pdf" multiple>
+                                    </div>
+                                    <div class="file-preview" id="filePreview"></div>
+                                </div>
+                                <div class="form-group"><label>Keterangan</label><textarea id="inputDokKeterangan" class="form-input" rows="2"></textarea></div>
+                                <div style="display:flex;gap:12px;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--gray-200)">
+                                    <button type="button" class="btn btn-secondary" id="inputDokReset"><i class="fas fa-undo"></i> Reset</button>
+                                    <button type="submit" class="btn btn-primary" style="padding:12px 32px"><i class="fas fa-save"></i> Simpan Dokumen</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card" id="inputDokSuccess" style="display:none"><div class="card-body"><div class="input-success"><i class="fas fa-check-circle"></i><h3>Dokumen Berhasil Disimpan!</h3><p id="successInfo"></p><div class="btn-group"><button class="btn btn-primary" id="btnInputLagi"><i class="fas fa-plus"></i> Input Lagi</button><button class="btn btn-secondary" id="btnLihatDokumen"><i class="fas fa-list"></i> Lihat Dokumen</button></div></div></div></div>
+                </div>
+            </section>
+
+            <!-- PENAGIHAN (SIMPLIFIED) -->
+            <section class="page" id="page-penagihan">
+                <div class="input-dok-container">
+                    <div class="card penagihan-card" id="penagihanCard">
+                        <div class="card-header"><h3><i class="fas fa-file-invoice-dollar"></i> Input Penagihan Baru</h3><span class="badge badge-purple" id="penagihanDate"></span></div>
+                        <div class="card-body">
+                            <form id="formPenagihan">
+                                <div class="form-group">
+                                    <label>NPWP Wajib Pajak <span class="required">*</span></label>
+                                    <input type="text" id="tagihNPWP" class="form-input" placeholder="Masukkan NPWP (contoh: 01.234.567.8-901.000)" required maxlength="20">
+                                    <small class="form-hint">Format: XX.XXX.XXX.X-XXX.XXX</small>
+                                </div>
+                                <div class="form-group"><label>Nomor Kohir (otomatis)</label><div class="kohir-display" id="kohirPreview">00001-124</div><input type="hidden" id="tagihKohir"></div>
+                                <div class="form-group"><label>Jenis Pajak <span class="required">*</span></label><select id="tagihJenisPajak" class="form-select" required><option value="">-- Pilih --</option><option>PPh Pasal 21</option><option>PPh Pasal 22</option><option>PPh Pasal 23</option><option>PPh Pasal 25</option><option>PPh Pasal 29</option><option>PPh Final</option><option>PPN</option><option>PBB</option><option>BPHTB</option><option>Lainnya</option></select></div>
+                                <div class="form-group"><label>Keterangan</label><textarea id="tagihKeterangan" class="form-input" rows="2"></textarea></div>
+                                <div style="display:flex;gap:12px;justify-content:flex-end;padding-top:16px;border-top:1px solid var(--gray-200)">
+                                    <button type="button" class="btn btn-secondary" id="tagihReset"><i class="fas fa-undo"></i> Reset</button>
+                                    <button type="submit" class="btn btn-purple" style="padding:12px 32px"><i class="fas fa-save"></i> Simpan Penagihan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card" id="penagihanSuccess" style="display:none"><div class="card-body"><div class="input-success"><i class="fas fa-check-circle"></i><h3>Penagihan Berhasil Disimpan!</h3><p id="tagihSuccessInfo"></p><div class="btn-group"><button class="btn btn-purple" id="btnTagihLagi"><i class="fas fa-plus"></i> Input Lagi</button><button class="btn btn-secondary" id="btnCariPenagihan"><i class="fas fa-search"></i> Cari Penagihan</button></div></div></div></div>
+                </div>
+            </section>
+
+            <!-- CARI PENAGIHAN -->
+            <section class="page" id="page-cari-penagihan">
+                <div class="card"><div class="card-header"><h3><i class="fas fa-search-dollar"></i> Pencarian Dokumen Penagihan</h3></div><div class="card-body">
+                    <div class="search-section"><div class="search-input-group"><input type="text" id="searchTagih" placeholder="Cari NPWP, Nama, atau Nomor Kohir..." class="form-input form-input-lg"><button class="btn btn-purple" style="padding:14px 28px;font-size:1rem" id="btnSearchTagih"><i class="fas fa-search"></i> Cari</button></div></div>
+                    <div id="hasilTagih" style="display:none"></div>
+                    <div id="tidakDitemukanTagih" class="not-found" style="display:none"><i class="fas fa-exclamation-triangle"></i><h3>Tidak Ditemukan</h3><p>Data penagihan tidak ditemukan.</p></div>
+                </div></div>
+            </section>
+
+            <!-- PENCARIAN DOKUMEN -->
+            <section class="page" id="page-pencarian">
+                <div class="card"><div class="card-header"><h3><i class="fas fa-search"></i> Pencarian Dokumen</h3></div><div class="card-body">
+                    <div class="search-section"><div class="search-input-group"><input type="text" id="searchNPWP" placeholder="NPWP atau Nama..." class="form-input form-input-lg"><button class="btn btn-primary" style="padding:14px 28px;font-size:1rem" id="btnCariNPWP"><i class="fas fa-search"></i> Cari</button></div></div>
+                    <div id="hasilPencarian" style="display:none"><div class="wp-info-card" id="wpInfoCard"></div><div class="card" style="margin-top:20px"><div class="card-header"><h3>Dokumen</h3><span class="badge badge-info" id="jumlahDokDitemukan">0</span></div><div class="card-body"><div class="table-responsive"><table class="data-table"><thead><tr><th>No</th><th>No.Dok</th><th>Jenis</th><th>Thn</th><th>File</th><th>Status</th></tr></thead><tbody id="tableHasilCari"></tbody></table></div></div></div></div>
+                    <div id="tidakDitemukan" class="not-found" style="display:none"><i class="fas fa-exclamation-triangle"></i><h3>Tidak Ditemukan</h3></div>
+                </div></div>
+            </section>
+
+            <!-- LAPORAN -->
+            <section class="page" id="page-laporan">
+                <div class="page-header"><h3>Laporan</h3><button class="btn btn-success" id="btnExport"><i class="fas fa-file-excel"></i> Export CSV</button></div>
+                <div class="card"><div class="card-header"><h3><i class="fas fa-chart-bar"></i> Rekap Data</h3><button class="btn btn-primary btn-sm" id="btnGenerate"><i class="fas fa-sync"></i> Refresh</button></div><div class="card-body">
+                    <div class="laporan-summary"><div class="summary-item"><h4 id="lapTotalWP">0</h4><p>Wajib Pajak</p></div><div class="summary-item"><h4 id="lapTotalDok">0</h4><p>Dokumen</p></div><div class="summary-item"><h4 id="lapLengkap">0</h4><p>Lengkap</p></div><div class="summary-item"><h4 id="lapBelumLengkap">0</h4><p>Belum Lengkap</p></div></div>
+                    <div class="table-responsive" style="margin-top:20px"><table class="data-table"><thead><tr><th>No</th><th>NPWP</th><th>Nama</th><th>Jenis Dok</th><th>Thn</th><th>Status</th></tr></thead><tbody id="tableLaporan"></tbody></table></div>
+                </div></div>
+            </section>
+
+            <!-- USER -->
+            <section class="page" id="page-pengguna"><div class="page-header"><h3>Kelola User</h3></div><div class="card"><div class="card-body"><div class="table-responsive"><table class="data-table"><thead><tr><th>No</th><th>Nama</th><th>Username</th><th>Role</th><th>Aksi</th></tr></thead><tbody id="tableUsers"></tbody></table></div></div></div></section>
+        </div>
+    </main>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modalWP"><div class="modal"><div class="modal-header"><h3 id="modalWPTitle">Tambah WP</h3><button class="modal-close" id="closeModalWP"><i class="fas fa-times"></i></button></div><div class="modal-body"><form id="formWP"><input type="hidden" id="wpId"><div class="form-group"><label>NPWP <span class="required">*</span></label><input type="text" id="wpNPWP" class="form-input" required maxlength="20"><small class="form-hint">Format: XX.XXX.XXX.X-XXX.XXX</small></div><div class="form-group"><label>Nama <span class="required">*</span></label><input type="text" id="wpNama" class="form-input" required></div><div class="form-row"><div class="form-group"><label>Jenis</label><select id="wpJenis" class="form-select"><option>Orang Pribadi</option><option>Badan</option></select></div><div class="form-group"><label>Status</label><select id="wpStatus" class="form-select"><option>Aktif</option><option>Tidak Aktif</option></select></div></div><div class="form-group"><label>Alamat</label><textarea id="wpAlamat" class="form-input" rows="2"></textarea></div><div class="form-row"><div class="form-group"><label>Telp</label><input type="text" id="wpTelp" class="form-input"></div><div class="form-group"><label>Email</label><input type="email" id="wpEmail" class="form-input"></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" id="cancelWP">Batal</button><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button></div></form></div></div></div>
+
+<div class="modal-overlay" id="modalDetail"><div class="modal modal-lg"><div class="modal-header"><h3>Detail Dokumen</h3><button class="modal-close" id="closeModalDetail"><i class="fas fa-times"></i></button></div><div class="modal-body" id="detailContent"></div></div></div>
+
+<div class="modal-overlay" id="modalPassword"><div class="modal" style="max-width:420px"><div class="modal-header"><h3>Ganti Password</h3><button class="modal-close" id="closeModalPass"><i class="fas fa-times"></i></button></div><div class="modal-body"><form id="formChangePass"><div class="form-group"><label>Password Lama</label><input type="password" id="oldPass" class="form-input" required></div><div class="form-group"><label>Password Baru</label><input type="password" id="newPass" class="form-input" required minlength="6"></div><div class="form-group"><label>Konfirmasi</label><input type="password" id="confirmNewPass" class="form-input" required></div><div class="modal-footer"><button type="button" class="btn btn-secondary" id="cancelPass">Batal</button><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button></div></form></div></div></div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ==================== DATABASE ====================
+function G(k) { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch(e) { return []; } }
+function S(k, d) { try { localStorage.setItem(k, JSON.stringify(d)); } catch(e) { console.error('Storage error:', e); } }
+function getUsers() { return G('users'); }
+function setUsers(d) { S('users', d); }
+function getWPList() { return G('wp'); }
+function setWPList(d) { S('wp', d); }
+function getDocList() { return G('docs'); }
+function setDocList(d) { S('docs', d); }
+function getPenagihanList() { return G('penagihan'); }
+function setPenagihanList(d) { S('penagihan', d); }
+function getSession() { try { return JSON.parse(localStorage.getItem('session') || 'null'); } catch(e) { return null; } }
+function setSession(d) { localStorage.setItem('session', JSON.stringify(d)); }
+
+// ==================== UTILITIES ====================
+function gid() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 9); }
+function td() { return new Date().toISOString().split('T')[0]; }
+function fDate(d) {
+    if (!d) return '-';
+    var dt = new Date(d); if (isNaN(dt.getTime())) return '-';
+    var m = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    return dt.getDate() + ' ' + m[dt.getMonth()] + ' ' + dt.getFullYear();
+}
+function eH(s) { if (s === null || s === undefined) return ''; var d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; }
+function sb(s) {
+    var m = {'Aktif':'badge-success','Tidak Aktif':'badge-danger','Lengkap':'badge-success','Belum Lengkap':'badge-danger','Proses Verifikasi':'badge-warning'};
+    return '<span class="badge ' + (m[s] || 'badge-primary') + '">' + eH(s) + '</span>';
+}
+function fWP(n) { var l = getWPList(); for (var i = 0; i < l.length; i++) if (l[i].npwp === n) return l[i]; return null; }
+function toast(m, t) {
+    t = t || 'success'; var c = document.getElementById('toastContainer'), e = document.createElement('div');
+    e.className = 'toast toast-' + t;
+    e.innerHTML = '<i class="fas fa-' + (t === 'error' ? 'times' : t === 'warning' ? 'exclamation' : 'check') + '-circle"></i> ' + eH(m);
+    c.appendChild(e);
+    setTimeout(function() { e.style.opacity = '0'; e.style.transform = 'translateX(100px)'; e.style.transition = '.3s'; setTimeout(function() { if (e.parentNode) e.remove(); }, 300); }, 3000);
+}
+function fmtN(i) {
+    var v = i.value.replace(/\D/g, ''), f = '';
+    for (var x = 0; x < v.length && x < 15; x++) {
+        if (x === 2 || x === 5 || x === 8) f += '.';
+        if (x === 9) f += '-';
+        if (x === 12) f += '.';
+        f += v[x];
+    }
+    i.value = f;
+}
+
+// ==================== KOHIR: 00001-124, 00002-124, ... ====================
+function genKohir() {
+    var p = getPenagihanList();
+    var cnt = p.length + 1;
+    var num = ('00000' + cnt).slice(-5);
+    return num + '-124';
+}
+
+// ==================== FILE HANDLING ====================
+var fileRegistry = {};
+var uploadedFiles = [];
+function getUploadedFiles() { return uploadedFiles; }
+function setUploadedFiles(arr) { uploadedFiles = arr; }
+
+function setupFileUpload(areaId, inputId, previewId, getArr, setArr) {
+    var area = document.getElementById(areaId), inp = document.getElementById(inputId);
+    area.addEventListener('click', function(e) { if (!e.target.closest('button')) inp.click(); });
+    area.addEventListener('dragover', function(e) { e.preventDefault(); area.classList.add('dragover'); });
+    area.addEventListener('dragleave', function() { area.classList.remove('dragover'); });
+    area.addEventListener('drop', function(e) { e.preventDefault(); area.classList.remove('dragover'); handleFiles(e.dataTransfer.files, previewId, getArr, setArr); });
+    inp.addEventListener('change', function() { handleFiles(this.files, previewId, getArr, setArr); this.value = ''; });
+}
+
+function handleFiles(files, previewId, getArr, setArr) {
+    for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        if (f.type !== 'application/pdf') { toast('Hanya file PDF!', 'error'); continue; }
+        if (f.size > 10 * 1024 * 1024) { toast('Maks 10MB!', 'error'); continue; }
+        (function(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var obj = { name: file.name, size: file.size, data: e.target.result, id: gid() };
+                fileRegistry[obj.id] = obj;
+                var arr = getArr(); arr.push(obj); setArr(arr);
+                renderFiles(previewId, getArr, setArr);
+            };
+            reader.readAsDataURL(file);
+        })(f);
+    }
+}
+
+function renderFiles(previewId, getArr, setArr) {
+    var pv = document.getElementById(previewId), arr = getArr(), h = '';
+    for (var i = 0; i < arr.length; i++) {
+        var f = arr[i];
+        var sz = f.size < 1024 ? f.size + 'B' : f.size < 1048576 ? (f.size / 1024).toFixed(1) + 'KB' : (f.size / 1048576).toFixed(1) + 'MB';
+        h += '<div class="file-item"><i class="fas fa-file-pdf"></i><div class="file-info"><div class="file-name">' + eH(f.name) + '</div><div class="file-size">' + sz + '</div></div><button type="button" class="file-view" data-fid="' + f.id + '"><i class="fas fa-eye"></i></button><button type="button" class="file-remove" data-fid="' + f.id + '"><i class="fas fa-times"></i></button></div>';
+    }
+    pv.innerHTML = h;
+    pv.querySelectorAll('.file-view').forEach(function(btn) {
+        btn.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); var obj = fileRegistry[this.getAttribute('data-fid')]; if (obj) { var w = window.open(); if (w) { w.document.write('<iframe src="' + obj.data + '" style="width:100%;height:100%;border:none;position:fixed;top:0;left:0"></iframe>'); w.document.close(); } } });
+    });
+    pv.querySelectorAll('.file-remove').forEach(function(btn) {
+        btn.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); var fid = this.getAttribute('data-fid'); var a = getArr(); for (var j = a.length - 1; j >= 0; j--) if (a[j].id === fid) a.splice(j, 1); setArr(a); delete fileRegistry[fid]; renderFiles(previewId, getArr, setArr); });
+    });
+}
+
+// ==================== SEED - NO WP DATA ====================
+function initUsers() {
+    if (!getUsers().length) setUsers([
+        { id: gid(), nama: 'Administrator', username: 'admin', password: 'admin123', role: 'Admin', tgl: td() },
+        { id: gid(), nama: 'Operator', username: 'operator', password: 'operator123', role: 'Operator', tgl: td() }
+    ]);
+}
+// No seed for WP - start empty
+
+// ==================== AUTH ====================
+function doLogin(u, p) { var us = getUsers(); for (var i = 0; i < us.length; i++) if (us[i].username === u && us[i].password === p) { setSession({ uid: us[i].id, nama: us[i].nama, role: us[i].role }); return us[i]; } return null; }
+function doLogout() { localStorage.removeItem('session'); document.getElementById('loginPage').classList.remove('hidden'); document.getElementById('appLayout').classList.remove('active'); toast('Logout berhasil!'); }
+function checkSess() { var s = getSession(); if (s) { var us = getUsers(); for (var i = 0; i < us.length; i++) if (us[i].id === s.uid) { enterApp(us[i]); return true; } } return false; }
+function enterApp(u) {
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('appLayout').classList.add('active');
+    document.getElementById('sidebarAvatar').textContent = u.nama.charAt(0).toUpperCase();
+    document.getElementById('sidebarName').textContent = u.nama;
+    document.getElementById('sidebarRole').textContent = u.role;
+    document.getElementById('topbarName').textContent = u.nama;
+    document.getElementById('ddName').textContent = u.nama;
+    document.getElementById('ddRole').textContent = u.role;
+    document.getElementById('navPengguna').style.display = u.role === 'Admin' ? 'block' : 'none';
+    loadDash();
+}
+function curUser() { var s = getSession(); if (!s) return null; var us = getUsers(); for (var i = 0; i < us.length; i++) if (us[i].id === s.uid) return us[i]; return null; }
+
+// ==================== NAVIGATION ====================
+function nav(pg) {
+    var items = document.querySelectorAll('#navMenu li[data-page]');
+    for (var i = 0; i < items.length; i++) { items[i].classList.remove('active'); if (items[i].getAttribute('data-page') === pg) items[i].classList.add('active'); }
+    var pages = document.querySelectorAll('.page');
+    for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+    var t = document.getElementById('page-' + pg); if (t) t.classList.add('active');
+    var T = {'dashboard':'Dashboard','wajib-pajak':'Wajib Pajak','dokumen':'Dokumen','input-dokumen':'Input Dokumen','penagihan':'Penagihan','cari-penagihan':'Cari Penagihan','pencarian':'Cari Dokumen','laporan':'Laporan','pengguna':'Kelola User'};
+    document.getElementById('pageTitle').textContent = T[pg] || pg;
+    document.getElementById('sidebar').classList.remove('mobile-open');
+    if (pg === 'dashboard') loadDash();
+    if (pg === 'wajib-pajak') loadWP();
+    if (pg === 'dokumen') loadDok();
+    if (pg === 'laporan') genLap();
+    if (pg === 'pengguna') loadUsr();
+    if (pg === 'input-dokumen') initInputDok();
+    if (pg === 'penagihan') initPenagihan();
+}
+
+// ==================== DASHBOARD ====================
+function loadDash() {
+    var w = getWPList(), d = getDocList(), p = getPenagihanList(), t = td();
+    document.getElementById('totalWP').textContent = w.length;
+    document.getElementById('totalDokumen').textContent = d.length;
+    document.getElementById('totalPenagihan').textContent = p.length;
+    var tc = 0;
+    var jenis = {};
+    for (var i = 0; i < d.length; i++) {
+        if (d[i].tanggalInput === t) tc++;
+        var jd = d[i].jenisDokumen || 'Lainnya';
+        jenis[jd] = (jenis[jd] || 0) + 1;
+    }
+    document.getElementById('todayDokumen').textContent = tc;
+
+    // Recent
+    var sr = d.slice().sort(function(a, b) { return new Date(b.tanggalInput) - new Date(a.tanggalInput); }).slice(0, 5);
+    var tb = document.getElementById('recentDokumen');
+    if (!sr.length) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8">Belum ada dokumen</td></tr>'; }
+    else { var h = ''; for (var i = 0; i < sr.length; i++) { var x = sr[i], wp = fWP(x.npwp); h += '<tr><td class="npwp-display">' + eH(x.npwp) + '</td><td>' + eH(wp ? wp.nama : '-') + '</td><td>' + eH(x.jenisDokumen) + '</td><td>' + fDate(x.tanggalInput) + '</td><td>' + sb(x.status) + '</td></tr>'; } tb.innerHTML = h; }
+
+    // Jenis stats
+    var sd = document.getElementById('jenisStats'), jk = Object.keys(jenis);
+    if (!jk.length) { sd.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8">Belum ada data</div>'; }
+    else {
+        var mx = 1; for (var k in jenis) if (jenis[k] > mx) mx = jenis[k];
+        jk.sort(function(a, b) { return jenis[b] - jenis[a]; });
+        var sh = ''; for (var i = 0; i < jk.length; i++) sh += '<div class="kategori-item"><span class="label">' + eH(jk[i]) + '</span><div class="bar-wrapper"><div class="bar" style="width:' + (jenis[jk[i]] / mx * 100) + '%"></div></div><span class="count">' + jenis[jk[i]] + '</span></div>';
+        sd.innerHTML = sh;
+    }
+}
+
+// ==================== WAJIB PAJAK ====================
+function loadWP() {
+    var w = getWPList(), d = getDocList(), s = document.getElementById('searchWP').value.toLowerCase(), sf = document.getElementById('filterStatusWP').value, f = [];
+    for (var i = 0; i < w.length; i++) { if (s && w[i].npwp.toLowerCase().indexOf(s) === -1 && w[i].nama.toLowerCase().indexOf(s) === -1) continue; if (sf && w[i].status !== sf) continue; f.push(w[i]); }
+    var tb = document.getElementById('tableWP');
+    if (!f.length) { tb.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:#94a3b8">Data kosong</td></tr>'; return; }
+    var h = '';
+    for (var i = 0; i < f.length; i++) { var x = f[i], dc = 0; for (var j = 0; j < d.length; j++) if (d[j].npwp === x.npwp) dc++; h += '<tr><td>' + (i + 1) + '</td><td class="npwp-display">' + eH(x.npwp) + '</td><td><strong>' + eH(x.nama) + '</strong></td><td>' + eH(x.jenis) + '</td><td>' + eH(x.alamat || '-') + '</td><td>' + sb(x.status) + '</td><td><span class="badge badge-info">' + dc + '</span></td><td><div class="action-btns"><button class="btn btn-sm btn-primary btn-icon" data-edit-wp="' + x.id + '"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger btn-icon" data-del-wp="' + x.id + '"><i class="fas fa-trash"></i></button></div></td></tr>'; }
+    tb.innerHTML = h;
+    tb.querySelectorAll('[data-edit-wp]').forEach(function(b) { b.addEventListener('click', function() { editWP(this.getAttribute('data-edit-wp')); }); });
+    tb.querySelectorAll('[data-del-wp]').forEach(function(b) { b.addEventListener('click', function() { hapusWP(this.getAttribute('data-del-wp')); }); });
+}
+
+function simpanWP(e) {
+    e.preventDefault();
+    var id = document.getElementById('wpId').value, npwp = document.getElementById('wpNPWP').value.trim(), nm = document.getElementById('wpNama').value.trim();
+    if (npwp.replace(/\D/g, '').length < 15) { toast('NPWP harus 15 digit!', 'error'); return; }
+    var w = getWPList();
+    if (id) { for (var i = 0; i < w.length; i++) if (w[i].id === id) { w[i].npwp = npwp; w[i].nama = nm; w[i].jenis = document.getElementById('wpJenis').value; w[i].status = document.getElementById('wpStatus').value; w[i].alamat = document.getElementById('wpAlamat').value; w[i].telp = document.getElementById('wpTelp').value; w[i].email = document.getElementById('wpEmail').value; break; } toast('Data WP diupdate!'); }
+    else { for (var i = 0; i < w.length; i++) if (w[i].npwp === npwp) { toast('NPWP sudah ada!', 'error'); return; } w.push({ id: gid(), npwp: npwp, nama: nm, jenis: document.getElementById('wpJenis').value, status: document.getElementById('wpStatus').value, alamat: document.getElementById('wpAlamat').value, telp: document.getElementById('wpTelp').value, email: document.getElementById('wpEmail').value, tgl: td() }); toast('WP ditambahkan!'); }
+    setWPList(w); document.getElementById('modalWP').classList.remove('active'); loadWP(); loadDash();
+}
+
+function editWP(id) {
+    var w = getWPList(); for (var i = 0; i < w.length; i++) if (w[i].id === id) { var x = w[i]; document.getElementById('wpId').value = x.id; document.getElementById('wpNPWP').value = x.npwp; document.getElementById('wpNama').value = x.nama; document.getElementById('wpJenis').value = x.jenis; document.getElementById('wpStatus').value = x.status; document.getElementById('wpAlamat').value = x.alamat || ''; document.getElementById('wpTelp').value = x.telp || ''; document.getElementById('wpEmail').value = x.email || ''; document.getElementById('modalWPTitle').textContent = 'Edit WP'; document.getElementById('modalWP').classList.add('active'); return; }
+}
+
+function hapusWP(id) {
+    if (!confirm('Hapus WP beserta semua dokumen & penagihannya?')) return;
+    var w = getWPList(), wp; for (var i = 0; i < w.length; i++) if (w[i].id === id) { wp = w[i]; break; } if (!wp) return;
+    var d = getDocList(), nd = []; for (var i = 0; i < d.length; i++) if (d[i].npwp !== wp.npwp) nd.push(d[i]); setDocList(nd);
+    var p = getPenagihanList(), np = []; for (var i = 0; i < p.length; i++) if (p[i].npwp !== wp.npwp) np.push(p[i]); setPenagihanList(np);
+    var nw = []; for (var i = 0; i < w.length; i++) if (w[i].id !== id) nw.push(w[i]); setWPList(nw);
+    toast('WP dihapus!'); loadWP(); loadDash();
+}
+
+// ==================== DOKUMEN ====================
+function loadDok() {
+    var d = getDocList(), s = document.getElementById('searchDokumen').value.toLowerCase(), sf = document.getElementById('filterStatusDok').value, f = [];
+    for (var i = 0; i < d.length; i++) { var x = d[i], wp = fWP(x.npwp), wn = wp ? wp.nama.toLowerCase() : ''; if (s && x.npwp.toLowerCase().indexOf(s) === -1 && x.nomor.toLowerCase().indexOf(s) === -1 && wn.indexOf(s) === -1 && x.jenisDokumen.toLowerCase().indexOf(s) === -1) continue; if (sf && x.status !== sf) continue; f.push(x); }
+    f.sort(function(a, b) { return new Date(b.tanggalInput) - new Date(a.tanggalInput); });
+    var tb = document.getElementById('tableDokumen');
+    if (!f.length) { tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:20px;color:#94a3b8">Data kosong</td></tr>'; return; }
+    var h = '';
+    for (var i = 0; i < f.length; i++) { var x = f[i], wp = fWP(x.npwp), fc = x.files ? x.files.length : 0; h += '<tr><td>' + (i + 1) + '</td><td><strong>' + eH(x.nomor) + '</strong></td><td class="npwp-display">' + eH(x.npwp) + '</td><td>' + eH(wp ? wp.nama : '-') + '</td><td>' + eH(x.jenisDokumen) + '</td><td>' + eH(x.tahunPajak) + '</td><td>' + (fc ? '<span class="badge badge-info"><i class="fas fa-file-pdf"></i> ' + fc + '</span>' : '-') + '</td><td>' + sb(x.status) + '</td><td><div class="action-btns"><button class="btn btn-sm btn-info btn-icon" data-det-dok="' + x.id + '"><i class="fas fa-eye"></i></button><button class="btn btn-sm btn-danger btn-icon" data-del-dok="' + x.id + '"><i class="fas fa-trash"></i></button></div></td></tr>'; }
+    tb.innerHTML = h;
+    tb.querySelectorAll('[data-det-dok]').forEach(function(b) { b.addEventListener('click', function() { detDok(this.getAttribute('data-det-dok')); }); });
+    tb.querySelectorAll('[data-del-dok]').forEach(function(b) { b.addEventListener('click', function() { hapusDok(this.getAttribute('data-del-dok')); }); });
+}
+
+function hapusDok(id) { if (!confirm('Hapus dokumen?')) return; var d = getDocList(), n = []; for (var i = 0; i < d.length; i++) if (d[i].id !== id) n.push(d[i]); setDocList(n); toast('Dokumen dihapus!'); loadDok(); loadDash(); }
+
+function detDok(id) {
+    var d = getDocList();
+    for (var i = 0; i < d.length; i++) if (d[i].id === id) {
+        var x = d[i], wp = fWP(x.npwp), fh = '';
+        if (x.files && x.files.length) { fh = '<div style="margin-top:8px">'; for (var j = 0; j < x.files.length; j++) fh += '<div class="file-item" style="margin-bottom:6px"><i class="fas fa-file-pdf"></i><div class="file-info"><div class="file-name">' + eH(x.files[j].name) + '</div></div><button class="file-view" data-doc-id="' + x.id + '" data-file-idx="' + j + '"><i class="fas fa-external-link-alt"></i> Buka</button></div>'; fh += '</div>'; }
+        document.getElementById('detailContent').innerHTML = '<div class="detail-grid"><div class="detail-item"><label>No.Dok</label><span>' + eH(x.nomor) + '</span></div><div class="detail-item"><label>Tanggal Input</label><span>' + fDate(x.tanggalInput) + '</span></div><hr class="detail-divider"><div class="detail-item"><label>NPWP</label><span class="npwp-display">' + eH(x.npwp) + '</span></div><div class="detail-item"><label>Nama WP</label><span>' + eH(wp ? wp.nama : '-') + '</span></div><hr class="detail-divider"><div class="detail-item"><label>Jenis Dokumen</label><span>' + eH(x.jenisDokumen) + '</span></div><div class="detail-item"><label>Tahun Pajak</label><span>' + eH(x.tahunPajak) + '</span></div><div class="detail-item"><label>Masa Pajak</label><span>' + eH(x.masaPajak || '-') + '</span></div><div class="detail-item"><label>Status</label><span>' + sb(x.status) + '</span></div><div class="detail-item full-width"><label>Keterangan</label><span>' + eH(x.keterangan || '-') + '</span></div><div class="detail-item full-width"><label>File Dokumen</label>' + (fh || '<span>Tidak ada file</span>') + '</div></div>';
+        document.getElementById('detailContent').querySelectorAll('[data-doc-id]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var did = this.getAttribute('data-doc-id'), fidx = parseInt(this.getAttribute('data-file-idx'));
+                var docs = getDocList(); for (var k = 0; k < docs.length; k++) if (docs[k].id === did && docs[k].files && docs[k].files[fidx]) { var w2 = window.open(); if (w2) { w2.document.write('<iframe src="' + docs[k].files[fidx].data + '" style="width:100%;height:100%;border:none;position:fixed;top:0;left:0"></iframe>'); w2.document.close(); } return; }
+            });
+        });
+        document.getElementById('modalDetail').classList.add('active'); return;
+    }
+}
+
+// ==================== INPUT DOKUMEN ====================
+function initInputDok() {
+    document.getElementById('inputDokCard').style.display = 'block';
+    document.getElementById('inputDokSuccess').style.display = 'none';
+    document.getElementById('formInputDok').reset();
+    uploadedFiles = [];
+    renderFiles('filePreview', getUploadedFiles, setUploadedFiles);
+    document.getElementById('inputDokDate').textContent = fDate(td());
+    setTimeout(function() { document.getElementById('inputDokNPWP').focus(); }, 200);
+}
+
+function simpanInputDok(e) {
+    e.preventDefault();
+    var npwp = document.getElementById('inputDokNPWP').value.trim();
+    var nom = document.getElementById('inputDokNomor').value.trim();
+    var jd = document.getElementById('inputDokJenis').value.trim();
+    var tp = document.getElementById('inputDokTahun').value;
+    if (!npwp) { toast('Masukkan NPWP!', 'error'); return; }
+    if (npwp.replace(/\D/g, '').length < 15) { toast('NPWP harus 15 digit!', 'error'); return; }
+    if (!nom || !jd || !tp) { toast('Lengkapi semua field wajib!', 'error'); return; }
+
+    // Auto-create WP if not exists
+    var wp = fWP(npwp);
+    if (!wp) {
+        var wl = getWPList();
+        wl.push({ id: gid(), npwp: npwp, nama: 'WP-' + npwp, jenis: 'Orang Pribadi', status: 'Aktif', alamat: '', telp: '', email: '', tgl: td() });
+        setWPList(wl);
+    }
+
+    var d = getDocList();
+    for (var i = 0; i < d.length; i++) if (d[i].nomor === nom) { toast('Nomor dokumen sudah ada!', 'error'); return; }
+    d.push({
+        id: gid(), npwp: npwp, nomor: nom, jenisDokumen: jd,
+        tahunPajak: tp, masaPajak: document.getElementById('inputDokMasa').value,
+        status: document.getElementById('inputDokStatus').value,
+        keterangan: document.getElementById('inputDokKeterangan').value,
+        files: uploadedFiles.map(function(f) { return { name: f.name, size: f.size, data: f.data }; }),
+        tanggalInput: td()
+    });
+    setDocList(d);
+    wp = fWP(npwp);
+    document.getElementById('successInfo').textContent = nom + ' untuk ' + (wp ? wp.nama : npwp) + ' (' + uploadedFiles.length + ' file)';
+    document.getElementById('inputDokCard').style.display = 'none';
+    document.getElementById('inputDokSuccess').style.display = 'block';
+    toast('Dokumen berhasil disimpan!');
+    loadDash();
+}
+
+// ==================== PENAGIHAN (SIMPLIFIED) ====================
+function initPenagihan() {
+    document.getElementById('penagihanCard').style.display = 'block';
+    document.getElementById('penagihanSuccess').style.display = 'none';
+    document.getElementById('formPenagihan').reset();
+    document.getElementById('penagihanDate').textContent = fDate(td());
+    var k = genKohir();
+    document.getElementById('kohirPreview').textContent = k;
+    document.getElementById('tagihKohir').value = k;
+    setTimeout(function() { document.getElementById('tagihNPWP').focus(); }, 200);
+}
+
+function simpanPenagihan(e) {
+    e.preventDefault();
+    var npwp = document.getElementById('tagihNPWP').value.trim();
+    var jp = document.getElementById('tagihJenisPajak').value;
+    if (!npwp) { toast('Masukkan NPWP!', 'error'); return; }
+    if (npwp.replace(/\D/g, '').length < 15) { toast('NPWP harus 15 digit!', 'error'); return; }
+    if (!jp) { toast('Pilih jenis pajak!', 'error'); return; }
+
+    // Auto-create WP if not exists
+    var wp = fWP(npwp);
+    if (!wp) {
+        var wl = getWPList();
+        wl.push({ id: gid(), npwp: npwp, nama: 'WP-' + npwp, jenis: 'Orang Pribadi', status: 'Aktif', alamat: '', telp: '', email: '', tgl: td() });
+        setWPList(wl);
+    }
+
+    var p = getPenagihanList();
+    p.push({
+        id: gid(), npwp: npwp,
+        kohir: document.getElementById('tagihKohir').value,
+        jenisPajak: jp,
+        keterangan: document.getElementById('tagihKeterangan').value,
+        tanggalInput: td()
+    });
+    setPenagihanList(p);
+    wp = fWP(npwp);
+    document.getElementById('tagihSuccessInfo').textContent = 'Kohir: ' + document.getElementById('tagihKohir').value + ' untuk ' + (wp ? wp.nama : npwp);
+    document.getElementById('penagihanCard').style.display = 'none';
+    document.getElementById('penagihanSuccess').style.display = 'block';
+    toast('Penagihan berhasil disimpan!');
+    loadDash();
+}
+
+// ==================== CARI PENAGIHAN ====================
+function cariPenagihan() {
+    var q = document.getElementById('searchTagih').value.trim().toLowerCase();
+    if (!q) { toast('Masukkan kata kunci!', 'warning'); return; }
+    var p = getPenagihanList(), res = [];
+    for (var i = 0; i < p.length; i++) {
+        var x = p[i], wp = fWP(x.npwp), wn = wp ? wp.nama.toLowerCase() : '';
+        if (x.npwp.toLowerCase().indexOf(q) !== -1 || x.kohir.toLowerCase().indexOf(q) !== -1 || wn.indexOf(q) !== -1 || x.jenisPajak.toLowerCase().indexOf(q) !== -1) res.push(x);
+    }
+    var hd = document.getElementById('hasilTagih'), tdEl = document.getElementById('tidakDitemukanTagih');
+    if (!res.length) { hd.style.display = 'none'; tdEl.style.display = 'block'; return; }
+    tdEl.style.display = 'none'; hd.style.display = 'block';
+    var h = '<p style="margin-bottom:16px;color:var(--gray-500)">Ditemukan <strong>' + res.length + '</strong> penagihan</p>';
+    for (var i = 0; i < res.length; i++) {
+        var x = res[i], wp = fWP(x.npwp);
+        h += '<div class="penagihan-result-card"><div class="penagihan-result-header"><div><div class="kohir-big">' + eH(x.kohir) + '</div><div style="font-size:.8rem;opacity:.8;margin-top:4px">' + eH(wp ? wp.nama : '-') + ' &bull; ' + eH(x.npwp) + '</div></div></div><div style="padding:16px 20px"><div class="detail-grid"><div class="detail-item"><label>Jenis Pajak</label><span>' + eH(x.jenisPajak) + '</span></div><div class="detail-item"><label>Tanggal Input</label><span>' + fDate(x.tanggalInput) + '</span></div><div class="detail-item full-width"><label>Keterangan</label><span>' + eH(x.keterangan || '-') + '</span></div></div></div></div>';
+    }
+    hd.innerHTML = h;
+}
+
+// ==================== CARI DOKUMEN ====================
+function cariNPWP() {
+    var q = document.getElementById('searchNPWP').value.trim();
+    if (!q) { toast('Masukkan NPWP atau nama!', 'warning'); return; }
+    var w = getWPList(), wp = null;
+    for (var i = 0; i < w.length; i++) if (w[i].npwp.indexOf(q) !== -1 || w[i].nama.toLowerCase().indexOf(q.toLowerCase()) !== -1) { wp = w[i]; break; }
+    var hd = document.getElementById('hasilPencarian'), tdEl = document.getElementById('tidakDitemukan');
+    if (!wp) { hd.style.display = 'none'; tdEl.style.display = 'block'; return; }
+    tdEl.style.display = 'none'; hd.style.display = 'block';
+    var d = getDocList(), wd = []; for (var i = 0; i < d.length; i++) if (d[i].npwp === wp.npwp) wd.push(d[i]);
+    document.getElementById('wpInfoCard').innerHTML = '<div class="wp-info-item"><label>NPWP</label><span class="npwp-display">' + eH(wp.npwp) + '</span></div><div class="wp-info-item"><label>Nama</label><span>' + eH(wp.nama) + '</span></div><div class="wp-info-item"><label>Jenis</label><span>' + eH(wp.jenis) + '</span></div><div class="wp-info-item"><label>Dokumen</label><span>' + wd.length + '</span></div>';
+    document.getElementById('jumlahDokDitemukan').textContent = wd.length;
+    var tb = document.getElementById('tableHasilCari');
+    if (!wd.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8">Belum ada dokumen</td></tr>'; }
+    else { var h = ''; for (var i = 0; i < wd.length; i++) { var x = wd[i], fc = x.files ? x.files.length : 0; h += '<tr><td>' + (i + 1) + '</td><td><strong>' + eH(x.nomor) + '</strong></td><td>' + eH(x.jenisDokumen) + '</td><td>' + eH(x.tahunPajak) + '</td><td>' + (fc ? '<span class="badge badge-info"><i class="fas fa-file-pdf"></i> ' + fc + '</span>' : '-') + '</td><td>' + sb(x.status) + '</td></tr>'; } tb.innerHTML = h; }
+}
+
+// ==================== LAPORAN ====================
+function genLap() {
+    var d = getDocList(), ws = {}, lg = 0, bl = 0;
+    for (var i = 0; i < d.length; i++) { ws[d[i].npwp] = true; if (d[i].status === 'Lengkap') lg++; if (d[i].status === 'Belum Lengkap') bl++; }
+    document.getElementById('lapTotalWP').textContent = Object.keys(ws).length;
+    document.getElementById('lapTotalDok').textContent = d.length;
+    document.getElementById('lapLengkap').textContent = lg;
+    document.getElementById('lapBelumLengkap').textContent = bl;
+    var tb = document.getElementById('tableLaporan');
+    if (!d.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8">Data kosong</td></tr>'; return; }
+    var h = ''; for (var i = 0; i < d.length; i++) { var x = d[i], wp = fWP(x.npwp); h += '<tr><td>' + (i + 1) + '</td><td class="npwp-display">' + eH(x.npwp) + '</td><td>' + eH(wp ? wp.nama : '-') + '</td><td>' + eH(x.jenisDokumen) + '</td><td>' + eH(x.tahunPajak) + '</td><td>' + sb(x.status) + '</td></tr>'; }
+    tb.innerHTML = h;
+}
+function exportCSV() {
+    var d = getDocList(); if (!d.length) { toast('Data kosong!', 'warning'); return; }
+    var c = '\uFEFF' + 'No,NPWP,Nama,No Dok,Jenis,Tahun,Status,File\n';
+    for (var i = 0; i < d.length; i++) { var x = d[i], wp = fWP(x.npwp); c += (i + 1) + ',"' + x.npwp + '","' + (wp ? wp.nama : '') + '","' + x.nomor + '","' + x.jenisDokumen + '","' + x.tahunPajak + '","' + x.status + '","' + (x.files ? x.files.length : 0) + '"\n'; }
+    var b = new Blob([c], { type: 'text/csv' }); var l = document.createElement('a'); l.href = URL.createObjectURL(b); l.download = 'Laporan_' + td() + '.csv'; l.click(); toast('Export berhasil!');
+}
+
+// ==================== USERS ====================
+function loadUsr() {
+    var u = getUsers(), cu = curUser(), tb = document.getElementById('tableUsers'), h = '';
+    for (var i = 0; i < u.length; i++) { var x = u[i]; h += '<tr><td>' + (i + 1) + '</td><td><strong>' + eH(x.nama) + '</strong></td><td>' + eH(x.username) + '</td><td><span class="badge ' + (x.role === 'Admin' ? 'badge-danger' : 'badge-primary') + '">' + eH(x.role) + '</span></td><td>' + (cu && x.id === cu.id ? '<span class="badge badge-info">Anda</span>' : '<button class="btn btn-sm btn-danger btn-icon" data-del-usr="' + x.id + '"><i class="fas fa-trash"></i></button>') + '</td></tr>'; }
+    tb.innerHTML = h;
+    tb.querySelectorAll('[data-del-usr]').forEach(function(b) { b.addEventListener('click', function() { var uid = this.getAttribute('data-del-usr'); if (!confirm('Hapus user?')) return; var us = getUsers(), n = []; for (var i = 0; i < us.length; i++) if (us[i].id !== uid) n.push(us[i]); setUsers(n); toast('User dihapus!'); loadUsr(); }); });
+}
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', function() {
+    initUsers();
+    // No seed data for WP - start clean
+    if (!checkSess()) document.getElementById('loginPage').classList.remove('hidden');
+
+    // LOGIN
+    document.getElementById('formLogin').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var u = doLogin(document.getElementById('loginUsername').value.trim(), document.getElementById('loginPassword').value);
+        if (u) { document.getElementById('loginError').classList.remove('show'); toast('Halo, ' + u.nama + '!'); enterApp(u); }
+        else { document.getElementById('loginErrorMsg').textContent = 'Username atau password salah!'; document.getElementById('loginError').classList.add('show'); }
+    });
+    document.getElementById('showRegister').addEventListener('click', function() { document.getElementById('loginFormCard').style.display = 'none'; document.getElementById('registerFormCard').style.display = 'block'; });
+    document.getElementById('showLogin').addEventListener('click', function() { document.getElementById('registerFormCard').style.display = 'none'; document.getElementById('loginFormCard').style.display = 'block'; });
+    document.getElementById('formRegister').addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (document.getElementById('regPassword').value !== document.getElementById('regConfirm').value) { document.getElementById('registerErrorMsg').textContent = 'Password tidak cocok!'; document.getElementById('registerError').classList.add('show'); return; }
+        var u = getUsers(), un = document.getElementById('regUsername').value.trim();
+        for (var i = 0; i < u.length; i++) if (u[i].username === un) { document.getElementById('registerErrorMsg').textContent = 'Username sudah ada!'; document.getElementById('registerError').classList.add('show'); return; }
+        u.push({ id: gid(), nama: document.getElementById('regNama').value.trim(), username: un, password: document.getElementById('regPassword').value, role: document.getElementById('regRole').value, tgl: td() });
+        setUsers(u); toast('Berhasil mendaftar!'); document.getElementById('registerFormCard').style.display = 'none'; document.getElementById('loginFormCard').style.display = 'block'; document.getElementById('registerError').classList.remove('show');
+    });
+    document.getElementById('toggleLoginPass').addEventListener('click', function() { var i = document.getElementById('loginPassword'); i.type = i.type === 'password' ? 'text' : 'password'; this.querySelector('i').className = 'fas fa-eye' + (i.type === 'text' ? '-slash' : ''); });
+    document.getElementById('toggleRegPass').addEventListener('click', function() { var i = document.getElementById('regPassword'); i.type = i.type === 'password' ? 'text' : 'password'; this.querySelector('i').className = 'fas fa-eye' + (i.type === 'text' ? '-slash' : ''); });
+
+    // LOGOUT
+    document.getElementById('sidebarLogout').addEventListener('click', function() { if (confirm('Logout?')) doLogout(); });
+    document.getElementById('ddLogout').addEventListener('click', function() { if (confirm('Logout?')) doLogout(); });
+    document.getElementById('topbarUser').addEventListener('click', function(e) { e.stopPropagation(); document.getElementById('userDropdown').classList.toggle('show'); });
+    document.addEventListener('click', function() { document.getElementById('userDropdown').classList.remove('show'); });
+
+    // CHANGE PASS
+    document.getElementById('btnChangePass').addEventListener('click', function(e) { e.stopPropagation(); document.getElementById('userDropdown').classList.remove('show'); document.getElementById('formChangePass').reset(); document.getElementById('modalPassword').classList.add('active'); });
+    document.getElementById('formChangePass').addEventListener('submit', function(e) {
+        e.preventDefault(); var u = curUser(); if (!u) return;
+        if (u.password !== document.getElementById('oldPass').value) { toast('Password lama salah!', 'error'); return; }
+        var np = document.getElementById('newPass').value;
+        if (np !== document.getElementById('confirmNewPass').value) { toast('Password baru tidak cocok!', 'error'); return; }
+        var us = getUsers(); for (var i = 0; i < us.length; i++) if (us[i].id === u.id) us[i].password = np;
+        setUsers(us); document.getElementById('modalPassword').classList.remove('active'); toast('Password diubah!');
+    });
+    document.getElementById('closeModalPass').addEventListener('click', function() { document.getElementById('modalPassword').classList.remove('active'); });
+    document.getElementById('cancelPass').addEventListener('click', function() { document.getElementById('modalPassword').classList.remove('active'); });
+
+    // NAV
+    document.querySelectorAll('#navMenu li[data-page]').forEach(function(it) { it.addEventListener('click', function() { nav(it.getAttribute('data-page')); }); });
+    document.getElementById('mobileToggle').addEventListener('click', function() { document.getElementById('sidebar').classList.toggle('mobile-open'); });
+
+    // WP
+    document.getElementById('btnTambahWP').addEventListener('click', function() { document.getElementById('formWP').reset(); document.getElementById('wpId').value = ''; document.getElementById('modalWPTitle').textContent = 'Tambah Wajib Pajak'; document.getElementById('modalWP').classList.add('active'); });
+    document.getElementById('closeModalWP').addEventListener('click', function() { document.getElementById('modalWP').classList.remove('active'); });
+    document.getElementById('cancelWP').addEventListener('click', function() { document.getElementById('modalWP').classList.remove('active'); });
+    document.getElementById('formWP').addEventListener('submit', simpanWP);
+    document.getElementById('wpNPWP').addEventListener('input', function() { fmtN(this); });
+    document.getElementById('searchWP').addEventListener('input', loadWP);
+    document.getElementById('filterStatusWP').addEventListener('change', loadWP);
+
+    // DOK
+    document.getElementById('btnTambahDok').addEventListener('click', function() { nav('input-dokumen'); });
+    document.getElementById('searchDokumen').addEventListener('input', loadDok);
+    document.getElementById('filterStatusDok').addEventListener('change', loadDok);
+    document.getElementById('closeModalDetail').addEventListener('click', function() { document.getElementById('modalDetail').classList.remove('active'); });
+
+    // INPUT DOK - NPWP auto format
+    document.getElementById('inputDokNPWP').addEventListener('input', function() { fmtN(this); });
+    setupFileUpload('fileUploadArea', 'fileInput', 'filePreview', getUploadedFiles, setUploadedFiles);
+    document.getElementById('formInputDok').addEventListener('submit', simpanInputDok);
+    document.getElementById('inputDokReset').addEventListener('click', function() { document.getElementById('formInputDok').reset(); uploadedFiles = []; renderFiles('filePreview', getUploadedFiles, setUploadedFiles); });
+    document.getElementById('btnInputLagi').addEventListener('click', initInputDok);
+    document.getElementById('btnLihatDokumen').addEventListener('click', function() { nav('dokumen'); });
+
+    // PENAGIHAN - NPWP auto format
+    document.getElementById('tagihNPWP').addEventListener('input', function() { fmtN(this); });
+    document.getElementById('formPenagihan').addEventListener('submit', simpanPenagihan);
+    document.getElementById('tagihReset').addEventListener('click', function() { document.getElementById('formPenagihan').reset(); var k = genKohir(); document.getElementById('kohirPreview').textContent = k; document.getElementById('tagihKohir').value = k; });
+    document.getElementById('btnTagihLagi').addEventListener('click', initPenagihan);
+    document.getElementById('btnCariPenagihan').addEventListener('click', function() { nav('cari-penagihan'); });
+
+    // CARI PENAGIHAN
+    document.getElementById('btnSearchTagih').addEventListener('click', cariPenagihan);
+    document.getElementById('searchTagih').addEventListener('keypress', function(e) { if (e.key === 'Enter') cariPenagihan(); });
+
+    // CARI DOKUMEN
+    document.getElementById('btnCariNPWP').addEventListener('click', cariNPWP);
+    document.getElementById('searchNPWP').addEventListener('keypress', function(e) { if (e.key === 'Enter') cariNPWP(); });
+
+    // LAPORAN
+    document.getElementById('btnGenerate').addEventListener('click', genLap);
+    document.getElementById('btnExport').addEventListener('click', exportCSV);
+
+    // CLOSE MODALS
+    document.querySelectorAll('.modal-overlay').forEach(function(o) { o.addEventListener('click', function(e) { if (e.target === o) o.classList.remove('active'); }); });
+});
+</script>
+</body>
+</html>
